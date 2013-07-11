@@ -9,16 +9,19 @@
 
 /*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
 
-int f_ndx,l_ndx,e_ndx;
-int i,j,k;
-int tot_ev;
-int fnd,cnt;
-const int v_l = 7;
-const int p_l = 13;
+static int f_ndx,l_ndx,e_ndx;
+static int i,j,k;
+static int tot_ev;
+static int fnd,cnt;
+static int v_l;
+static int p_l;
 
 /*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
 
 int energy_int(double data[], int n_proc[], int *n_ev, double en[]){
+
+  v_l =  7;
+  p_l = 13;
 
   tot_ev = *n_ev;
   cnt = 0;
@@ -44,6 +47,8 @@ int energy_int(double data[], int n_proc[], int *n_ev, double en[]){
 
   *n_ev = tot_ev - cnt;
 
+  printf("Data option enabled -> in the range [%5.2f,%f5.2] keV...\n",en[0],en[1]);
+
   return 0;
 }
 
@@ -51,12 +56,14 @@ int energy_int(double data[], int n_proc[], int *n_ev, double en[]){
 
 int nofproc(double data[], int n_proc[], int *n_ev, int n[]){
 
+  v_l =  7;
+  p_l = 13;
+
   tot_ev = *n_ev;
   cnt = 0;
   f_ndx=0;
   e_ndx=0;
   for(i=0;i<tot_ev;i++) e_ndx += v_l + n_proc[i]*p_l; 
-
   for(i=0;i<tot_ev;i++){
     fnd = 0;
     l_ndx = f_ndx + v_l + n_proc[i-cnt]*p_l;
@@ -75,12 +82,17 @@ int nofproc(double data[], int n_proc[], int *n_ev, int n[]){
 
   *n_ev = tot_ev - cnt;
 
+  printf("Data option enabled -> # of process [%2d,%2d] ...\n",n[0],n[1]);
+
   return 0;
 }
 
 /*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
 
 int clean_0(double data[], int n_proc[], int *n_ev){
+
+  v_l =  7;
+  p_l = 13;
 
   tot_ev = *n_ev;
   cnt = 0;
@@ -105,12 +117,18 @@ int clean_0(double data[], int n_proc[], int *n_ev){
   }
 
   *n_ev = tot_ev - cnt;
+
+  printf("Data option enabled -> Neglect 0 interaction...\n");
+
   return 0;
 }
 
 /*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
 
 int proc_exc(double data[], int n_proc[], int *n_ev, char proc[]){
+
+  v_l =  7;
+  p_l = 13;
   
   char c_proc[3] = {'c','p','r'};
   double check = 3;
@@ -153,6 +171,8 @@ int proc_exc(double data[], int n_proc[], int *n_ev, char proc[]){
 
   *n_ev = tot_ev - cnt;
 
+  printf("Data option enabled -> exclude process %s ...\n",proc);
+
  exit :
   if (check==3)
     return 1;
@@ -164,8 +184,10 @@ int proc_exc(double data[], int n_proc[], int *n_ev, char proc[]){
 /*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
 
 int all_detected(double data[], int n_proc[], int *n_ev){
-  
 
+  v_l =  7;
+  p_l = 13;
+  
   tot_ev = *n_ev;
   cnt=0;
   f_ndx = 0;  
@@ -193,6 +215,9 @@ int all_detected(double data[], int n_proc[], int *n_ev){
   }
   
   *n_ev = tot_ev - cnt;
+
+  printf("Data option enabled -> Only events detected completely...\n");
+
 
   return 0;
 

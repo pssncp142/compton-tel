@@ -12,6 +12,7 @@
 int read_bin(char fname[], double data[], int n_proc[]){
 
   int i,j,ndx,tmp,n_ev;
+  char a;
   FILE* f;
   f = fopen(fname,"r");
 
