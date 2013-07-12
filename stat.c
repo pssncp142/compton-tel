@@ -5,6 +5,7 @@
 \*****************************************************************************/
 
 #include "stdio.h"
+#include "stat.h"
 
 static int f_ndx,l_ndx;
 static int i,j,k;
@@ -18,13 +19,14 @@ int stat_complete(double stat[], double data[], int n_proc[], int n_ev, int verb
 
   v_l =  7;
   p_l = 13;
-
+  f_ndx = 0;
+  
   double ener;
 
   stat[0] = 0;
   stat[1] = 0;
   stat[2] = 0;
-  
+
   for(i=0;i<n_ev;i++){
     fnd = 0;
     ener = 0;
