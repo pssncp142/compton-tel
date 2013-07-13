@@ -11,7 +11,7 @@
 
 #define PI 3.14159f
 
-int i,j;
+static int i,j;
 
 /*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
 //norm of a vector
