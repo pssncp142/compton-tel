@@ -9,15 +9,15 @@
 
 /*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
 
-static int f_ndx,l_ndx,e_ndx;
-static int i,j,k;
-static int tot_ev;
-static int fnd,cnt;
-static int v_l;
-static int p_l;
+int f_ndx,l_ndx,e_ndx;
+int i,j,k;
+int tot_ev;
+int fnd,cnt;
+int v_l;
+int p_l;
 
 /*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
-
+//exclude event from data within energy range considering en array
 int energy_int(double data[], int n_proc[], int *n_ev, double en[]){
 
   v_l =  7;
@@ -53,7 +53,7 @@ int energy_int(double data[], int n_proc[], int *n_ev, double en[]){
 }
 
 /*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
-
+//exclude events from data within the range of n (# of interaction)
 int nofproc(double data[], int n_proc[], int *n_ev, int n[]){
 
   v_l =  7;
@@ -88,7 +88,7 @@ int nofproc(double data[], int n_proc[], int *n_ev, int n[]){
 }
 
 /*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
-
+//exclude all events with no interactions
 int clean_0(double data[], int n_proc[], int *n_ev){
 
   v_l =  7;
@@ -124,7 +124,7 @@ int clean_0(double data[], int n_proc[], int *n_ev){
 }
 
 /*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
-
+//exclude events with specific interaction
 int proc_exc(double data[], int n_proc[], int *n_ev, char proc[]){
 
   v_l =  7;
@@ -182,7 +182,7 @@ int proc_exc(double data[], int n_proc[], int *n_ev, char proc[]){
 }
 
 /*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
-
+//to get only complete events
 int all_detected(double data[], int n_proc[], int *n_ev){
 
   v_l =  7;

@@ -14,8 +14,12 @@ static int v_l;
 static int p_l;
 
 /*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
-
-int stat_complete(double stat[], double data[], int n_proc[], int n_ev, int verb){
+//returns statistics about completeness of the event
+//stat[0] --> complete detection (%)
+//stat[1] --> partial detection (%)
+//stat[2] --> no detections(%)
+int stat_complete(double stat[], double data[], int n_proc[], 
+		  int n_ev, int verb){
 
   v_l =  7;
   p_l = 13;
@@ -44,18 +48,20 @@ int stat_complete(double stat[], double data[], int n_proc[], int n_ev, int verb
   stat[1] /= n_ev;
   stat[2] /= n_ev;
 
-  printf("From %3d of events...\n",n_ev);
-  printf("All energy detected events : %4.2f %%\n",stat[0]*100);
-  printf("Partial detected events    : %4.2f %%\n",stat[1]*100);
-  printf("No interaction             : %4.2f %%\n",stat[2]*100);
-  
+  if(verb){
+    printf("From %3d of events...\n",n_ev);
+    printf("All energy detected events : %4.2f %%\n",stat[0]*100);
+    printf("Partial detected events    : %4.2f %%\n",stat[1]*100);
+    printf("No interaction             : %4.2f %%\n",stat[2]*100);
+  }
   
   return 0;
 }
 
 /*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
 
-int stat_nofproc(double stat[], double data[], int n_proc[], int n_ev, int verb){
+int stat_nofproc(double stat[], double data[], int n_proc[], 
+		 int n_ev, int verb){
 
   v_l =  7;
   p_l = 13;

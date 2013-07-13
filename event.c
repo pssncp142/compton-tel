@@ -2,7 +2,19 @@
  * Yigit Dallilar 12.07.2013                                                 *
  * DTU-Space                                                                 *
  * Compton telescope library for events                                      *
-\*****************************************************************************/
+\*****************************************************************************
+ * Variables :                                                               *
+ * data   --> direct input from geant binary                                 *
+ * event  --> event array                                                    *
+ * n_proc --> # of process related with data                                 *
+ * n_ev   --> from # of events                                               *
+ * ndx    --> event index                                                    *
+ * verb   --> verbosity                                                      *
+ *                                                                           *
+ * event[0]          --> number of interaction                               *
+ * event[1+4*j]      --> interaction energy                                  *
+ * event[2+4*j+0:2]  --> interaction positions                               *
+ *****************************************************************************/
 
 #include "stdio.h"
 #include "binio.h"
@@ -15,7 +27,7 @@ int v_l;
 int p_l;
 
 /*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
-
+//picks an event from the data with index ndx
 int pick_event(double event[], double data[], int n_proc[], 
 	       int n_ev, int ndx, int verb){
   v_l = 7; p_l = 13;

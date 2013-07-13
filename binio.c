@@ -2,13 +2,28 @@
  * Yigit Dallilar 10.07.2013                                                 *
  * DTU-Space                                                                 *
  * Compton telescope data in out library                                     *
-\*****************************************************************************/
-
+\*****************************************************************************
+ * data[st+0:2]         --> vertex positions                                 *
+ * data[st+3:5]         --> vertex momentum direction                        *
+ * data[st+6]           --> vertex kinetic energy                            *
+ * data[st+7+13*i+0]    --> interaction type                                 *
+ * data[st+7+13*i+1]    --> which detector                                   *
+ * data[st+7+13*i+2]    --> local time                                       *
+ * data[st+7+13*i+3:5]  --> interaction position                             *
+ * data[st+7+13*i+6:8]  --> coming momentum direction                        *
+ * data[st+7+13*i+9:11] --> incident momentum direction                      *
+ * data[st+7+13*i+12]   --> energy deposit                                   *
+ *                                                                           *
+ * st --> starting index for the event                                       *
+ * i  --> interaction index                                                  *
+ *                                                                           *
+ * n_proc               --> # of processes for all events                    *
+ *****************************************************************************/
 #include "stdio.h"
 #include "binio.h"
 
 /*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
-
+//reads binary file from geant
 int read_bin(char fname[], double data[], int n_proc[]){
 
   int i,j,ndx,tmp,n_ev;
@@ -37,7 +52,7 @@ int read_bin(char fname[], double data[], int n_proc[]){
 }
 
 /*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
-
+//prints the choosen event from data
 int print_one(double data[], int n_proc[], int ndx){
 
   int i,j;
@@ -83,7 +98,7 @@ int print_one(double data[], int n_proc[], int ndx){
 }
 
 /*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
-
+//prints all events from data
 int print_all(double data[], int n_proc[], int n_ev){
   
   int i;
