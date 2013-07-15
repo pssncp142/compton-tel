@@ -16,11 +16,11 @@ int main(int argv,char **argc){
   double *data = (double*)malloc(1000000*sizeof(double));
   int *n_proc = (int*)malloc(10000*sizeof(int));
   int n_ev;
-  int n[2] = {5,5};
+  int n[2] = {6,9};
   double stat[10];
   double event[100];
-  double match[1000];
-  int path[1000]={0};
+  double match[100000];
+  int path[100000]={0};
   int verb = 1;
   double en[2] = {900,1000};
   double vec1[5];
@@ -34,12 +34,13 @@ int main(int argv,char **argc){
   nofproc(data,n_proc,&n_ev,n);
 
   
-  for(i=0;i<5;i++){
+  for(i=0;i<n_ev;i++){
     pick_event(event,data,n_proc,n_ev,i,1);
     path[0] = 0; path[1]=0;
-    compt_match3(match,path,event,0);
-    compt_add_path(path,match,1);
-    compt_match3(match,path,event,1);
+    for(j=0;j<event[0];j++){
+      compt_match3(match,path,event,1);
+      if(compt_add_path(path,match,1)==1) break;
+    }
   }
 
   free(data);

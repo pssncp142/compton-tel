@@ -9,12 +9,12 @@
 
 /*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
 
-int f_ndx,l_ndx,e_ndx;
-int i,j,k;
-int tot_ev;
-int fnd,cnt;
-int v_l;
-int p_l;
+static int f_ndx,l_ndx,e_ndx;
+static int i,j,k;
+static int tot_ev;
+static int fnd,cnt;
+static int v_l;
+static int p_l;
 
 /*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
 //exclude event from data within energy range considering en array
