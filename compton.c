@@ -8,6 +8,7 @@
 #include "math.h"
 #include "compton.h"
 #include "3d_cart_vec.h"
+#include "event.h"
 
 /*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
 
@@ -100,11 +101,11 @@ int compt_match3(double match[], int path[], double event[], int verb){
 
 /*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
 
-int compt_add_path(int path[], double match[], int verb){
+int compt_add_path(int path[], double match[], double event[], int verb){
   
   int s = 0;
   int cnt = 0;
-  int tpath[5000] = {0};
+  int tpath[10000] = {0};
   int ndx = 0;
   int ndx_p,fnd;
   int n_p=0;
@@ -145,34 +146,76 @@ int compt_add_path(int path[], double match[], int verb){
     path[1] = n_p;
     for(j=0;j<5000;j++) {path[2+j] = tpath[j];}
   }
- 
+
+  if(verb){
+    printf("Real interaction order :\n");
+    printf("* ");
+    if(event[1+(int)event[0]*5]==0) printf(" Out -->");
+    for(j=0;j<event[0];j++){
+      printf("%2d -->",(int)event[1+(int)event[0]*4+j]);
+    }
+    printf(" Sky\n");
+  }   
 
   if(s){
     path[0]++;
     if(verb){
       printf("Number of paths : %2d\n",path[1]);
       for(i=0;i<path[1];i++){
-	printf(" * ");
+	printf("* ");
 	for(j=0;j<path[0];j++){
-	  printf("%3d -->",path[2+path[0]*i+j]);
+	  printf("%2d -->",path[2+path[0]*i+j]);
 	}
-	printf("?\n");
+	printf(" ?\n");
       }
     }
     return 0;
   } else {
-    if(verb) printf("No track added...\n");
     if(verb){
-      printf("Number of paths : %2d\n",path[1]);
-      for(i=0;i<path[1];i++){
-	printf(" * ");
-	for(j=0;j<path[0];j++){
-	  printf("%3d -->",path[2+path[0]*i+j]);
+      if(path[1]==0){
+	printf("\n\nUncompleted event...\n");
+      } else {
+	printf("\n\nResulted paths : %2d\n",path[1]);
+	for(i=0;i<path[1];i++){
+	  printf("* ");
+	  for(j=0;j<path[0];j++){
+	    printf("%2d -->",path[2+path[0]*i+j]);
+	  }
+	  printf(" Sky\n");
 	}
-	printf("SKY\n");
       }
     }
     return 1;
+  }
+}
+
+/*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
+//gets the full path
+
+int compt_get_path(int path[], double event[], int verb){
+
+  double match[10000];
+
+  path[0] = 0; path[1]=0;
+  for(j=0;j<100;j++){
+    compt_match3(match,path,event,verb);
+    if(compt_add_path(path,match,event,verb)==1) break;
+  }
+
+  if(event[1+5*(int)event[0]]==1){
+    if(path[1]==1){
+      return 0;
+    } else if(path[1]==0){
+      return 1;
+    } else {
+      return 4;
+    }
+  } else {
+    if(path[1]==0){
+      return 2;
+    } else {
+      return 3;
+    }
   }
 }
 
