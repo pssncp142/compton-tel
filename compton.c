@@ -2,7 +2,23 @@
  * Yigit Dallilar 10.07.2013                                                 *
  * DTU-Space                                                                 *
  * Compton telescope looks for interaction order                             *
-\*****************************************************************************/
+\*****************************************************************************
+ * Variables :                                                               *
+ * path[0]                         --> length of a path                      *
+ * path[1]                         --> number of paths                       *
+ * path[2+path[0]*i+0:(path[0]-1)] --> interaction list                      *
+ * i                               --> path index                            *
+ *                                                                           *
+ * match[0]                        --> number of matches                     *
+ * match[1+5*i+3]                  --> angle calculated from positions       *
+ * match[1+5*i+4]                  --> angle calculated from compton         *
+ * if first match for the event                                              *
+ * match[1+5*i+0:2]                --> direction from absorption to compton  *
+ * for other matches                                                         *
+ * match[1+5*i]                    --> path index                            *
+ * match[1+5*i+1]                  --> last point for the current path       *
+ * match[1+5*i+2]                  --> the point investigated                *
+ *****************************************************************************/
 
 #include "stdio.h"
 #include "math.h"
@@ -24,6 +40,37 @@ static double rest_e = 510.998;
 double compt_angle(double post, double pre){
   
   return acos(1+rest_e*(post-pre)/(pre*post));
+}
+
+/*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
+
+double compt_en_err_en(double ang, double post, double err_en){
+
+  return err_en/(pow(1/compt_com_en(ang,post),2)*post);
+}
+
+/*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
+
+double compt_en_err_pos1(double ang, double post, double dist, double err_pos){
+
+  return err_pos*sin(ang)/(pow(1/compt_com_en(ang,post),2)*post*dist);
+}
+
+/*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
+
+double compt_en_err_pos2(double ang, double post, double dist, double err_pos){
+
+  double err_dist=err_pos/dist;
+
+  return (sin(ang)*err_dist+0.75*pow(sin(ang)*err_dist,2)+0.5*cos(ang)*err_dist*err_dist)/
+    (pow(1/compt_com_en(ang,post),2)*post);
+}
+
+/*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
+
+double compt_com_en(double ang, double post){
+
+  return 1/(1/post-(1-cos(ang))/rest_e);
 }
 
 /*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
@@ -66,8 +113,10 @@ int compt_match3(double match[], int path[], double event[], int verb){
 	  match[ndx++] = acos(vec_dotp(vec1,vec2)/(vec_norm(vec1)*vec_norm(vec2)));
 	  match[ndx++] = compt_angle(pre_e,pre_e+event[1+4*path[2+l_p*i+l_p-1]]);
 	  match[0]++;
+	  vec_subt(vec1,vec2);
 	  if(verb) printf("%4d %3d %4d %6.3f %8.3f %6.3f\n",
-			  (int)match[ndx-5],(int)match[ndx-4],(int)match[ndx-3],match[ndx-2],match[ndx-1],match[ndx-2]-match[ndx-1]);
+			  (int)match[ndx-5],(int)match[ndx-4],(int)match[ndx-3],match[ndx-2],match[ndx-1],
+			  match[ndx-2]-match[ndx-1]);
 	}
       }
     }
@@ -86,9 +135,11 @@ int compt_match3(double match[], int path[], double event[], int verb){
 	    match[ndx++] = j;
 	    match[ndx++] = l;
 	    match[ndx++] = acos(vec_dotp(vec1,vec2)/(vec_norm(vec1)*vec_norm(vec2)));
-	    match[ndx++] = compt_angle(event[1+4*k],event[1+4*k]+event[1+4*j]);	    
-	    if(verb) printf("%3d %3d %3d %6.3f %8.3f %6.3f\n",
-			    (int)match[ndx-5],(int)match[ndx-4],(int)match[ndx-3],match[ndx-2],match[ndx-1],match[ndx-2]-match[ndx-1]);
+	    match[ndx++] = compt_angle(event[1+4*k],event[1+4*k]+event[1+4*j]);	  
+	    vec_subt(vec1,vec2);
+	    if(verb) printf("%3d %3d %4d %6.3f %8.3f %6.3f\n",
+			    (int)match[ndx-5],(int)match[ndx-4],(int)match[ndx-3],match[ndx-2],match[ndx-1],
+			    match[ndx-2]-match[ndx-1]);
 	  }
 	}
       }

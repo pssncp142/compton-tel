@@ -8,6 +8,7 @@
 #include "stat.h"
 #include "3d_cart_vec.h"
 #include "compton.h"
+#include "backproj.h"
 
 int main(int argv,char **argc){
 
@@ -19,7 +20,7 @@ int main(int argv,char **argc){
   int n[2] = {3,6};
   double stat[10];
   double event[100];
-  double match[100000];
+  double cones[100000]={0};
   int path[100000]={0};
   int verb = 1;
   double en[2] = {900,1000};
@@ -39,6 +40,7 @@ int main(int argv,char **argc){
     pick_event(event,data,n_proc,n_ev,i,verb);
     st = compt_get_path(path,event,verb);
     if(st == 0){
+      back_add_cone(cones,event,path,1,verb);
       cs++;
     } else if(st == 1){
       cf++;
@@ -49,9 +51,13 @@ int main(int argv,char **argc){
     } else if(st == 4){
       cf2++;
     }
-    printf("\ncs :%4d   cf :%4d   cf2 :%4d   us :%4d   uf :%4d\n,",
-	   cs,cf,cf2,us,uf);
+    
+    if(verb)
+      printf("\ncs :%4d   cf :%4d   cf2 :%4d   us :%4d   uf :%4d\n",
+	     cs,cf,cf2,us,uf);
   }
+
+  //back_proj(cones,500,0.2*3.14,100,verb);
 
   free(data);
   free(n_proc);
