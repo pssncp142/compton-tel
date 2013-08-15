@@ -93,7 +93,7 @@ int compt_match3(double match[], int path[], double event[], int verb){
   }
 
   if(l_p!=0){
-    if(verb) printf("Path  It Post PosAng ComptAng  Error\n");
+    if(verb) printf("Path  It Post    CompDep(keV)    DetDep(keV)    AbsDiff    DetDep0.2    PosAng    ComptAng    ErrAng\n");
     for(i=0;i<n_p;i++){
       pre_e=0;
       for(j=0;j<l_p-1;j++) pre_e += event[1+4*path[2+l_p*i+j]];
@@ -110,18 +110,19 @@ int compt_match3(double match[], int path[], double event[], int verb){
 	  match[ndx++] = i;
 	  match[ndx++] = path[2+l_p*i+l_p-1];
 	  match[ndx++] = j;
+	  match[ndx++] = compt_com_en(acos(vec_dotp(vec1,vec2)/(vec_norm(vec1)*vec_norm(vec2))),pre_e)-pre_e;
+	  match[ndx++] = event[1+4*path[2+l_p*i+l_p-1]];
 	  match[ndx++] = acos(vec_dotp(vec1,vec2)/(vec_norm(vec1)*vec_norm(vec2)));
 	  match[ndx++] = compt_angle(pre_e,pre_e+event[1+4*path[2+l_p*i+l_p-1]]);
 	  match[0]++;
-	  vec_subt(vec1,vec2);
-	  if(verb) printf("%4d %3d %4d %6.3f %8.3f %6.3f\n",
-			  (int)match[ndx-5],(int)match[ndx-4],(int)match[ndx-3],match[ndx-2],match[ndx-1],
-			  match[ndx-2]-match[ndx-1]);
+	  if(verb) printf("%4d %3d %4d %15.3f %14.3f %10.3f %12.3f %9.3f %11.3f %9.3f\n",
+			  (int)match[ndx-7],(int)match[ndx-6],(int)match[ndx-5],match[ndx-4],match[ndx-3],
+			  fabs(match[ndx-4]-match[ndx-3]),match[ndx-3]*0.2,match[ndx-2],match[ndx-1],fabs(match[ndx-2]-match[ndx-1]));
 	}
       }
     }
   } else {
-    if(verb) printf("Pre  It Post PosAng ComptAng  Error\n");
+    if(verb) printf("Pre  It Post    CompDep(keV)    DetDep(keV)    AbsDiff    DetDep0.2    PosAng    ComptAng    ErrAng\n");
     for(j=0;j<n_ev;j++){
       for(k=0;k<n_ev;k++){
 	for(l=0;l<n_ev;l++){
@@ -134,12 +135,14 @@ int compt_match3(double match[], int path[], double event[], int verb){
 	    match[ndx++] = k;
 	    match[ndx++] = j;
 	    match[ndx++] = l;
+	    match[ndx++] = compt_com_en(acos(vec_dotp(vec1,vec2)/(vec_norm(vec1)*vec_norm(vec2))),event[1+4*k])-event[1+4*k];
+	    match[ndx++] = event[1+4*j];	  
 	    match[ndx++] = acos(vec_dotp(vec1,vec2)/(vec_norm(vec1)*vec_norm(vec2)));
 	    match[ndx++] = compt_angle(event[1+4*k],event[1+4*k]+event[1+4*j]);	  
-	    vec_subt(vec1,vec2);
-	    if(verb) printf("%3d %3d %4d %6.3f %8.3f %6.3f\n",
-			    (int)match[ndx-5],(int)match[ndx-4],(int)match[ndx-3],match[ndx-2],match[ndx-1],
-			    match[ndx-2]-match[ndx-1]);
+	    if(verb) printf("%3d %3d %4d %15.3f %14.3f %10.3f %12.3f %9.3f %11.3f %9.3f\n",
+			    (int)match[ndx-7],(int)match[ndx-6],(int)match[ndx-5],match[ndx-4],match[ndx-3],
+			    fabs(match[ndx-4]-match[ndx-3]),match[ndx-3]*0.2,match[ndx-2],match[ndx-1],fabs(match[ndx-2]-match[ndx-1]));
+	    
 	  }
 	}
       }
@@ -163,13 +166,13 @@ int compt_add_path(int path[], double match[], double event[], int verb){
 
   if(path[0] == 0){
     for(i=0;i<match[0];i++){
-      if(fabs(match[1+5*i+3]-match[1+5*i+4])<0.1){
+      if(fabs(match[1+7*i+3]-match[1+7*i+4])<0.2*match[1+7*i+4]){
 	path[0]=2;
 	s = 1;
 	path[1]++;
-	path[2+3*cnt] = (int)match[1+5*i];
-	path[2+3*cnt+1] = (int)match[1+5*i+1];
-	path[2+3*cnt+2] = (int)match[1+5*i+2];
+	path[2+3*cnt] = (int)match[1+7*i];
+	path[2+3*cnt+1] = (int)match[1+7*i+1];
+	path[2+3*cnt+2] = (int)match[1+7*i+2];
 	cnt++;
       }
     }
@@ -177,16 +180,16 @@ int compt_add_path(int path[], double match[], double event[], int verb){
     
   } else {
     for(i=0;i<match[0];i++){
-      if(fabs(match[1+5*i+3]-match[1+5*i+4])<0.1){
+      if(fabs(match[1+7*i+3]-match[1+7*i+4])<0.2*match[1+7*i+4]){
 	for(j=0;j<path[1];j++){
-	  if(j == (int)match[1+5*i]){
+	  if(j == (int)match[1+7*i]){
 	    fnd=1;
 	    if(fnd){
 	      s=1; n_p++;
 	      for(k=0;k<path[0];k++){
 		tpath[ndx+k] = path[2+path[0]*j+k];
 	      }
-	      tpath[ndx+path[0]] = (int)match[1+5*i+2];
+	      tpath[ndx+path[0]] = (int)match[1+7*i+2];
 	      cnt++;
 	      ndx += (path[0]+1);
 	    }

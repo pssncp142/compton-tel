@@ -89,6 +89,47 @@ int nofproc(double data[], int n_proc[], int *n_ev, int n[]){
 
 /*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
 //exclude all events with no interactions
+int clean_out(double data[], int n_proc[], int *n_ev){
+
+  v_l =  7;
+  p_l = 13;
+
+  tot_ev = *n_ev;
+  cnt = 0;
+  f_ndx=0;
+  e_ndx=0;
+  for(i=0;i<tot_ev;i++) e_ndx += v_l + n_proc[i]*p_l; 
+
+  for(i=0;i<tot_ev;i++){
+    fnd = 1;
+    l_ndx = f_ndx + v_l + n_proc[i-cnt]*p_l;
+    for(j=0;j<n_proc[i-cnt];j++){
+      if(((int)data[f_ndx+v_l+p_l*j+1]) == 0 || 
+	 ((int)data[f_ndx+v_l+p_l*j+1]) == 2){
+	fnd=0; break;
+      }
+    }
+    if(fnd){
+      for(j=0;j<e_ndx-l_ndx;j++) data[f_ndx+j] = data[l_ndx+j];
+      e_ndx -= (v_l+n_proc[i-cnt]*p_l);
+      for(j=0;j<tot_ev-i;j++) n_proc[i-cnt+j] = n_proc[i-cnt+j+1];
+      cnt++;
+    } else {
+      f_ndx = l_ndx;
+    }
+  }
+
+  *n_ev = tot_ev - cnt;
+
+  printf("Data option enabled -> Exclude only out events\n");
+  printf("From %5d events...",tot_ev);
+  printf("Only out  : %4.1f\n",(double)cnt*100/tot_ev);
+
+  return 0;
+}
+
+/*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
+//exclude all events with no interactions
 int clean_0(double data[], int n_proc[], int *n_ev){
 
   v_l =  7;

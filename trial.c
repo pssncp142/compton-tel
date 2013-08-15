@@ -14,10 +14,11 @@ int main(int argv,char **argc){
 
   srand(time(NULL));
   int i,j,k,l;
-  double *data = (double*)malloc(1000000*sizeof(double));
-  int *n_proc = (int*)malloc(10000*sizeof(int));
+
+  double *data = (double*)malloc(30000000*sizeof(double));
+  int *n_proc = (int*)malloc(50000000*sizeof(int));
   int n_ev;
-  int n[2] = {3,6};
+  int n[2] = {3,15};
   double stat[10];
   double event[100];
   double cones[100000]={0};
@@ -34,7 +35,7 @@ int main(int argv,char **argc){
 
   n_ev = read_bin(argc[1],data,n_proc);
   nofproc(data,n_proc,&n_ev,n);
-
+  clean_out(data,n_proc,&n_ev);
   
   for(i=0;i<n_ev;i++){
     pick_event(event,data,n_proc,n_ev,i,verb);
@@ -54,11 +55,11 @@ int main(int argv,char **argc){
     
     if(verb)
       printf("\ncs :%4d   cf :%4d   cf2 :%4d   us :%4d   uf :%4d\n",
-	     cs,cf,cf2,us,uf);
+      cs,cf,cf2,us,uf);
   }
 
   //back_proj(cones,500,0.2*3.14,100,verb);
-
+  
   free(data);
   free(n_proc);
   return 0;

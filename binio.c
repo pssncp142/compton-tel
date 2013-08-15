@@ -33,11 +33,13 @@ int read_bin(char fname[], double data[], int n_proc[]){
 
   ndx = 0;
   n_ev = 0;
+  //printf("a\n");
   while(getc(f) != EOF){
-    fread(&tmp,sizeof(int),1,f);
-    n_proc[n_ev] = tmp;
+    fread(&n_proc[n_ev],sizeof(int),1,f);
+    //printf("%d\n",n_proc[n_ev]);
     for(i=0;i<7;i++) fread(&data[ndx++],sizeof(double),1,f);
-    for(i=0;i<n_proc[n_ev];i++) {
+    //printf("a\n");
+    for(i=0;i<n_proc[n_ev];i++) {      
       for(j=0;j<2;j++){
 	fread(&tmp,sizeof(int),1,f);
 	data[ndx++] = (double) tmp;
@@ -45,7 +47,9 @@ int read_bin(char fname[], double data[], int n_proc[]){
       for(j=0;j<11;j++) fread(&data[ndx++],sizeof(double),1,f);
     }
     n_ev++;
+    //printf("%d\n",n_ev);
   }
+  //printf("a\n");
   fclose(f);
   
   return n_ev;
@@ -86,6 +90,8 @@ int print_one(double data[], int n_proc[], int ndx){
 	printf(" %s","ins");
       }else if(data[st_ndx+1]==1) {
 	printf(" %s","out");
+      }else if(data[st_ndx+1]==2) {
+	printf(" %s","bot");
       }
       printf(" %6.3f  (%7.3f,%7.3f,%7.3f) (%7.3f,%7.3f,%7.3f) (%7.3f,%7.3f,%7.3f) %15.3f \n",
 	     data[st_ndx+2],data[st_ndx+3],data[st_ndx+4],data[st_ndx+5],data[st_ndx+6],data[st_ndx+7],data[st_ndx+8],

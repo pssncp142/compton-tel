@@ -96,19 +96,21 @@ int back_proj(double cones[], double height, double ang,
     c_z[1] = sin(cones[1+4*i])*sin(cones[2+4*i]);
     c_z[2] = cos(cones[1+4*i]);
     vec_ort_wc(c_x,d_x,c_z);
-    vec_cross_wc(c_y,c_z,c_x);
+    vec_cross_wc(c_y,c_x,c_z);
     vec_rotate(c_y,PI*0.5-cones[4+4*i],c_x);
-    for(j=0;j<5000;j++){
+    for(j=0;j<10000;j++){
       phi = (double) rand()/RAND_MAX;
       phi *= 2*PI;
       vec_rotate_wc(dir,c_z,phi,c_x);
       ratio = height/dir[2];
       dir[0] *= ratio;
       dir[1] *= ratio;
-      for(k=0;k<n_grid*n_grid;k++){
-	if(dir[0] <= posx[k]+g_size_over_2 && dir[0] > posx[k]-g_size_over_2 &&
-	   dir[1] <= posy[k]+g_size_over_2 && dir[1] > posy[k]-g_size_over_2){
-	  image[k] += cones[3+4*i]/5000; break;
+      if(dir[2] > 0 && dir[0] < length && dir[0] > -length && dir[1] < length && dir[1] > -length){
+	for(k=0;k<n_grid*n_grid;k++){
+	  if(dir[0] <= posx[k]+g_size_over_2 && dir[0] > posx[k]-g_size_over_2 &&
+	     dir[1] <= posy[k]+g_size_over_2 && dir[1] > posy[k]-g_size_over_2){
+	    image[k] += cones[3+4*i]/10000; break;
+	  }
 	}
       }
     }
@@ -120,6 +122,14 @@ int back_proj(double cones[], double height, double ang,
       fprintf(f,"%f ",image[j*n_grid+i]);
     }
     fprintf(f,"\n");
+  }
+  fclose(f);
+
+  f = fopen("image.tpt","w+");
+  for(i=0;i<n_grid;i++){
+    for(j=0;j<n_grid;j++){
+      fprintf(f,"%f %f %f \n",(float)i,(float)j,image[j*n_grid+i]);
+    }
   }
   fclose(f);
 
