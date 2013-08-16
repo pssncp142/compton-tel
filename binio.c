@@ -33,12 +33,9 @@ int read_bin(char fname[], double data[], int n_proc[]){
 
   ndx = 0;
   n_ev = 0;
-  //printf("a\n");
   while(getc(f) != EOF){
     fread(&n_proc[n_ev],sizeof(int),1,f);
-    //printf("%d\n",n_proc[n_ev]);
     for(i=0;i<7;i++) fread(&data[ndx++],sizeof(double),1,f);
-    //printf("a\n");
     for(i=0;i<n_proc[n_ev];i++) {      
       for(j=0;j<2;j++){
 	fread(&tmp,sizeof(int),1,f);

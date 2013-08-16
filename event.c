@@ -24,6 +24,8 @@
 #include "binio.h"
 #include "event.h"
 #include "math.h"
+#include "stdlib.h"
+#include "time.h"
 
 /*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
 
@@ -58,6 +60,7 @@ int pick_event(double event[], double data[], int n_proc[],
       event[1+n_p*5]=0;
     }
 
+    event_detect(event,verb);
     event_order(event,data,n_proc,ndx,verb);
     return 0;
   } else {
@@ -120,6 +123,65 @@ int event_order(double event[], double data[], int n_proc[],
   }   
 
   return 0;
+}
+
+/*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
+
+int event_detect(double *event, int verb){
+  int i,j,k;
+  
+  srand(time(NULL));
+
+  if(verb){
+    printf("\nDetected Event :\n");
+    printf("Ndx Energy(keV)          Position(mm)\n");
+  }
+
+  for(i=0;i<event[0];i++){
+    event[1+4*i] +=
+      ((double)2.*rand()/RAND_MAX-1.)*event[1+4*i]*0.01;
+    event[1+4*i+1] = floor(event[1+4*i+1])+0.5;
+    event[1+4*i+2] = floor(event[1+4*i+2])+0.5;
+    event[1+4*i+3] = floor(event[1+4*i+3])+0.5;
+    if (verb) printf("*%2d %9.4f   (%8.4f,%8.4f,%8.4f)\n",i,
+	   event[1+4*i],event[1+4*i+1],event[1+4*i+2],event[1+4*i+3]);
+  }
+
+  if(verb)printf("\n\n");
+
+  return 0;
+}
+
+/*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
+
+int event_type(double *event){
+  int i,j;
+  int ins=0,out=0;
+  double x=25,y=25,z=-50;
+
+  for(i=0; i<event[0]; i++){
+    if(event[2+4*i]<x && event[2+4*i]>-x &&
+       event[3+4*i]<y && event[3+4*i]>-y &&
+       event[4+4*i]>z)
+      ins++;
+    else{
+      out++;
+    }
+  }
+  
+  if(ins==0) return 0; //background
+  else if(ins+out==1) return 1; //no chance
+  else if(ins==2 && out==0) return 2; //back scatter +
+  else if(ins==3 && out==0) return 3; //choose good combination +
+  else if(ins>3  && out==0) return 4; //full search
+  else if(ins==1 && out==1) return 5; //look the likeliness to be in CZT +
+  else if(ins==2 && out==1) return 6; //try CZT with other 2 +
+  else if(ins>2  && out==1) return 7; //start search as CZt is teh absorber
+  else if(ins==1 && out==2) return 8; //find the last czt event +
+  else if(ins==1 && out>2 ) return 9; //order CZT
+  else if(ins==2 && out>1 ) return 10; //try (*) 2 cases +
+  else if(ins>2  && out>1 ) return 11; //collect czt order si
+  else {printf("FAIL FAIL FAIL FAIL FAIL FAIL FAIL %d %d\n",ins,out); return 20;}
 }
 
 /*****************************************************************************/
