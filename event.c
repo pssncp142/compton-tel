@@ -168,7 +168,7 @@ int event_type(double *event){
       out++;
     }
   }
-  
+
   if(ins==0) return 0; //background
   else if(ins+out==1) return 1; //no chance
   else if(ins==2 && out==0) return 2; //back scatter +
@@ -178,7 +178,7 @@ int event_type(double *event){
   else if(ins==2 && out==1) return 6; //try CZT with other 2 +
   else if(ins>2  && out==1) return 7; //start search as CZt is teh absorber
   else if(ins==1 && out==2) return 8; //find the last czt event +
-  else if(ins==1 && out>2 ) return 9; //order CZT
+  else if(ins==1 && out>2 ) return 9; //order CZT +
   else if(ins==2 && out>1 ) return 10; //try (*) 2 cases +
   else if(ins>2  && out>1 ) return 11; //collect czt order si
   else {printf("FAIL FAIL FAIL FAIL FAIL FAIL FAIL %d %d\n",ins,out); return 20;}

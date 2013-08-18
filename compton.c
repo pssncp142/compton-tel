@@ -168,7 +168,7 @@ int compt_add_path(int path[], double match[], double event[], int verb){
 
   if(path[0] == 0){
     for(i=0;i<match[0];i++){
-      if(fabs(match[1+7*i+3]-match[1+7*i+4])<0.5*match[1+7*i+4]){
+      if(fabs(match[1+7*i+3]-match[1+7*i+4])<0.2*match[1+7*i+4]){
 	path[0]=2;
 	s = 1;
 	path[1]++;
@@ -277,14 +277,15 @@ int compt_get_path(int path[], double event[], int verb){
   }
 }
 
-int compt_analyse(double *event, int *path){
+/*ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo*/
 
-  double cone[15];
+int compt_analyse(double *cone, double *event){
 
   int succ=0;
   int i,j,k;
   int type = event_type(event);
   cone[0] = (double) type;
+  
   //printf("%d\n",type);
 
   if(type==2){
@@ -347,103 +348,7 @@ int compt_analyse(double *event, int *path){
       cone[11] = err[ndx];
       succ=0;
     }
-  } /*else if (type==9){
-
-    printf("a\n");
-    int i,j,k;
-    double x=25,y=25,z=-50;
-    double vec1[3],vec2[3];
-    int ins;
-    int out[10];
-    int cnt1=0;
-    int cnt2=0;
-    int st;
-    double ev[200];
-    double en;
-
-    for(i=0;i<event[0];i++){
-      if(event[2+4*i]<x && event[2+4*i]>-x &&
-	 event[3+4*i]<y && event[3+4*i]>-y &&
-	 event[4+4*i]>z){
-	ins=i;
-	cnt1++;
-      } else {
-	out[cnt2]=i;
-	cnt2++;
-      }
-    }
-    
-    ev[0]=(double)cnt2;
-    printf("cnt : %d\n",cnt2);
-    for(i=0;i<cnt2;i++){
-      ev[1+4*i] = event[1+4*out[i]];
-      ev[2+4*i] = event[2+4*out[i]];
-      ev[3+4*i] = event[3+4*out[i]];
-      ev[4+4*i] = event[4+4*out[i]];
-      printf("A %f\n",ev[1+4*i]);
-    }
-    st=compt_get_path(path,ev,0);
-    printf("cnt : %d %f %d\n",cnt2,ev[0],path[1]);
-
-    en=0;
-    for(j=0;j<path[0];j++){
-      en += ev[1+4*path[2+j]];
-    } 
-    printf("%f\n",en);
-
-
-    double en1,en2;
-    double ang;
-    double err[path[1]];
-   
-    if(path[1]!=0){
-      //printf("%d %d\n",path[0],path[1]);
-      for(i=0;i<path[1];i++){
-	en=0;
-	for(j=0;j<path[0]-1;j++){
-	  en += ev[1+4*path[2+j+path[0]*i]];
-	}
-	printf("%f\n",en);
-	vec1[0] = ev[2+4*path[1+path[0]*(i+1)]] - event[2+4*ins];  
-	vec1[1] = ev[3+4*path[1+path[0]*(i+1)]] - event[3+4*ins];  
-	vec1[2] = ev[4+4*path[1+path[0]*(i+1)]] - event[4+4*ins];  
-	vec2[0] = ev[2+4*path[path[0]*(i+1)]] - ev[2+4*path[1+path[0]*(i+1)]];  
-	vec2[1] = ev[3+4*path[path[0]*(i+1)]] - ev[3+4*path[1+path[0]*(i+1)]];  
-	vec2[2] = ev[4+4*path[path[0]*(i+1)]] - ev[4+4*path[1+path[0]*(i+1)]];
-	en1 = en;
-	en2 = en+ev[1+4*path[1+path[0]*(i+1)]];
-	ang = acos(1+rest_e*(en1-en2)/(en1*en2));
-	err[i] = fabs(ang-acos(vec_dotp(vec1,vec2)/(vec_norm(vec1)*vec_norm(vec2))));      
-      }
-            
-      double min=1e6;
-      int ndx=80;
-      for(i=0;i<path[1];i++){
-	if(min>err[i]) { min = err[i]; ndx=i;}
-	printf("%f %d %d\n",err[i],i,path[1]);
-      }
-      printf("%d\n",ndx);
-      if(ndx>=0 && ndx<path[1]){
-	cone[1] = event[2+4*ins];
-	cone[2] = event[3+4*ins];
-	cone[3] = event[4+4*ins];
-	cone[4] = ev[2+4*path[1+path[0]*(ndx+1)]];
-	cone[5] = ev[3+4*path[1+path[0]*(ndx+1)]];
-	cone[6] = ev[4+4*path[1+path[0]*(ndx+1)]];
-	cone[7] = ev[2+4*path[1+path[0]*(ndx+1)]];
-	cone[8] = ev[2+4*path[1+path[0]*(ndx+1)]];
-	cone[9] = ev[2+4*path[1+path[0]*(ndx+1)]];
-	en=0;
-	for(j=0;j<path[0];j++){
-	  en += ev[1+4*path[2+j+path[1]*ndx]];
-	}
-	cone[10] = en+event[1+4*ins];
-	cone[11] = err[ndx];
-	succ=1;
-      } 
-    }
-    
-    }*/ else if(type==5){
+  } else if(type==5){
 
     double x=25,y=25,z=-50;
     int ins;
@@ -463,7 +368,7 @@ int compt_analyse(double *event, int *path){
     cone[6] = event[3+4*(!ins)];
     cone[7] = event[4+4*(!ins)];
     cone[8] = event[1+4*ins]+event[1+4*(!ins)];
-    succ=1;
+    succ=0;
     
   } else if(type==6){
     
@@ -515,7 +420,8 @@ int compt_analyse(double *event, int *path){
       cone[8] = event[3+4*out];
       cone[9] = event[4+4*out];
       cone[10] = event[1+4*ins[ndx]]+event[1+4*ins[!ndx]]+event[1+4*out];
-      cone[11] = err[ndx];
+      cone[11] = event[1+4*ins[!ndx]]+event[1+4*out];
+      cone[12] = err[ndx];
       succ=1;
     } 
     
@@ -569,7 +475,8 @@ int compt_analyse(double *event, int *path){
       cone[8] = event[3+4*out[!ndx]];
       cone[9] = event[4+4*out[!ndx]];
       cone[10] = event[1+4*ins]+event[1+4*out[ndx]]+event[1+4*out[!ndx]];
-      cone[11] = err[ndx];
+      cone[11] = event[1+4*out[ndx]]+event[1+4*out[!ndx]];
+      cone[12] = err[ndx];
       succ=1;
     }
 
@@ -641,7 +548,8 @@ int compt_analyse(double *event, int *path){
 	  en += event[1+4*out[k]];
       }
       cone[10] = en + event[1+4*ins];
-      cone[11] = err[ndx[0]*cnt2+ndx[1]];
+      cone[11] = en;
+      cone[12] = err[ndx[0]*cnt2+ndx[1]];
       succ=1;
     }
 
@@ -704,17 +612,19 @@ int compt_analyse(double *event, int *path){
       cone[8] = event[3+4*out[ndx[1]]];
       cone[9] = event[4+4*out[ndx[1]]];
       cone[10] = event[1+4*ins[ndx[0]]]+event[1+4*ins[!ndx[0]]]+event[1+4*out[ndx[1]]]+event[1+4*out[!ndx[1]]];
-      cone[11] = err[ndx[0]*2+ndx[1]];
+      cone[11] = event[1+4*ins[!ndx[0]]]+event[1+4*out[ndx[1]]]+event[1+4*out[!ndx[1]]];
+      cone[12] = err[ndx[0]*2+ndx[1]];
       succ=1;
     }
 
   }
 
   if(succ)
-    printf("%8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f\n",
-	   cone[0],cone[1],cone[2],cone[3],cone[4],cone[5],cone[6],cone[7],cone[8],cone[9],cone[10],cone[11]);
+    printf("%8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f %8.3f\n",
+	   cone[0],cone[1],cone[2],cone[3],cone[4],cone[5],cone[6],cone[7],cone[8],cone[9],cone[10],cone[11],cone[12]);
 
-  return 0;
+  //printf("%d\n",succ);
+  return succ;
 }
 
 /*****************************************************************************/
